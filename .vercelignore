@@ -1,6 +1,8 @@
 .venv/
 venv/
 node_modules/
+.next/
+.git/
 *.csv
 *.ipynb
-data/
+__pycache__/

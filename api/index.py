@@ -1,11 +1,11 @@
 import os
-import pickle
+##import pickle
 import re
 import nltk
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from nltk.stem.porter import PorterStemmer
-
+import joblib
 # 1. Setup NLTK data path for Vercel
 # This tells NLTK to look in a writable directory
 nltk_data_path = os.path.join("/tmp", "nltk_data")
@@ -33,8 +33,8 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 model_path = os.path.join(BASE_DIR, 'trained_model.sav')
 vectorizer_path = os.path.join(BASE_DIR, 'vectorizer.sav')
 
-model = pickle.load(open(model_path, 'rb'))
-vectorizer = pickle.load(open(vectorizer_path, 'rb'))
+model = joblib.load(open(model_path, 'rb'))
+vectorizer = joblib.load(open(vectorizer_path, 'rb'))
 port_stem = PorterStemmer()
 
 @app.post("/api/predict")
