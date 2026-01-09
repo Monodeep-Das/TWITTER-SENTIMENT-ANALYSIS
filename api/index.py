@@ -21,7 +21,7 @@ app = FastAPI()
 # 2. Update CORS for both local and production
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["https://twitter-sentiment-analysis-lyart.vercel.app/"], # For production, you can change this to your Vercel URL
+    allow_origins=["*"], # For production, you can change this to your Vercel URL
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
