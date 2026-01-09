@@ -137,5 +137,3 @@ This project is for **educational purposes only**.
 ---
 
 If you like this project, feel free to ⭐ the repository!
-
-```
