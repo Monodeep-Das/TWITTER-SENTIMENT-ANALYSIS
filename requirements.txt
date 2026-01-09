@@ -1,4 +1,7 @@
 fastapi
-scikit-learn==1.3.2 
+uvicorn
+scikit-learn
+pandas
+numpy
+nltk
 pydantic
-joblib
