@@ -1,103 +1,128 @@
-import Image from "next/image";
+"use client"
+
+import { useState } from "react"
+import Header from "@/components/header"
+import InputSection from "@/components/input-section"
+import ResultsPanel from "@/components/results-panel"
+import Footer from "@/components/footer"
+
+// Define the shape of our sentiment data
+type SentimentResult = {
+  sentiment: "positive" | "negative" | null
+  confidence: number
+}
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+  const [text, setText] = useState("")
+  const [result, setResult] = useState<SentimentResult>({ sentiment: null, confidence: 0 })
+  const [isLoading, setIsLoading] = useState(false)
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
+  const handleAnalyze = async () => {
+    if (!text.trim()) return
+
+    setIsLoading(true)
+    try {
+      /**
+       * 1. Use the relative path '/api/predict'.
+       * This leverages the 'rewrites' in next.config.ts to avoid CORS errors.
+       */
+      const response = await fetch("/api/predict", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ text }),
+      })
+
+      if (!response.ok) {
+        throw new Error(`Server responded with status: ${response.status}`)
+      }
+
+      const data = await response.json()
+
+      /**
+       * 2. Data Normalization.
+       * Python often returns "Positive" (Capitalized). 
+       * We convert to lowercase to match our TypeScript type "positive" | "negative".
+       */
+      setResult({
+        sentiment: data.sentiment.toLowerCase() as "positive" | "negative",
+        // Fallback to 0 if your backend doesn't send confidence yet
+        confidence: data.confidence || 0,
+      })
+    } catch (error) {
+      console.error("Error analyzing sentiment:", error)
+      // Reset result on error to clear old data
+      setResult({ sentiment: null, confidence: 0 })
+      alert("Failed to connect to the analysis server. Please ensure the Python backend is running.")
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+const handleRandomTweet = () => {
+    const sampleTweets = [
+      // Very Positive
+      "I absolutely love this product! Best purchase ever! 😍",
+      "Amazing service and great customer support, highly recommended!",
+      "The new update is a total game changer, everything works perfectly now!",
+      "Feeling so blessed and grateful for the support from my community today.",
+      "Just had the best cup of coffee of my life. What a great start to the day!",
+      
+      // Neutral / Informational
+      "The conference starts tomorrow at 9 AM in the main auditorium.",
+      "Just finished reading the latest research paper on Natural Language Processing.",
+      "The weather forecast says it might rain later this afternoon.",
+      "Is anyone else having trouble connecting to the Wi-Fi in the library?",
+      "Checking out the new features of the Next.js 15 App Router.",
+
+      // Sarcastic / Mixed
+      "Oh great, another meeting that could have been an email. Just what I needed. 🙄",
+      "I love it when my flight gets delayed for three hours for no reason.",
+      "The food was okay, but the service was so slow I almost fell asleep.",
+      "Wow, the instructions for this furniture are as clear as mud.",
+
+      // Negative / Frustrated
+      "This is the worst experience I have ever had. Completely disappointed.",
+      "Terrible quality, waste of money. Never buying again.",
+      "My laptop just crashed for the third time today. I'm losing all my work!",
+      "The customer service was extremely rude and unhelpful. Avoid this place.",
+      "I've been waiting for my order for three weeks and still nothing. Terrible.",
+      "This app is so buggy it's almost impossible to use. Fix it already!",
+      "Extremely frustrated with the constant delays. Zero stars if I could."
+    ]
+
+    const randomTweet = sampleTweets[Math.floor(Math.random() * sampleTweets.length)]
+    setText(randomTweet)
+  }
+
+  return (
+    <main className="min-h-screen bg-background flex flex-col">
+      <Header />
+      
+      <div className="flex-1 flex items-center justify-center px-4 py-12 md:py-16">
+        <div className="w-full max-w-2xl">
+          {/* Input section for typing or generating random tweets */}
+          <InputSection
+            text={text}
+            setText={setText}
+            onAnalyze={handleAnalyze}
+            onRandomTweet={handleRandomTweet}
+            isLoading={isLoading}
+            isDisabled={!text.trim()}
+          />
+
+          {/* Results Panel: Only shows when a sentiment result exists.
+            The backend returns "Positive" which we've converted to lowercase "positive".
+          */}
+          {result.sentiment && (
+            <ResultsPanel 
+              sentiment={result.sentiment} 
+              confidence={result.confidence} 
             />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+          )}
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
-  );
+      </div>
+
+      <Footer />
+    </main>
+  )
 }
