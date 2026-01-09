@@ -21,7 +21,7 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState(false)
 
   const RENDER_API_URL =
-    "https://twitter-sentiment-analysis-api.onrender.com/api/predict"
+    "https://twitter-sentiment-api.onrender.com/api/predict"
 
   const handleAnalyze = async () => {
     if (!text.trim()) return
