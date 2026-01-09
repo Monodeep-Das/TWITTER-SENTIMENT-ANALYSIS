@@ -6,3 +6,9 @@ node_modules/
 *.csv
 *.ipynb
 __pycache__/
+api/
+requirements.txt
+.venv/
+venv/
+*.sav
+*.py
