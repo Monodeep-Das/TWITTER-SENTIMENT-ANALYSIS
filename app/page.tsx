@@ -14,51 +14,49 @@ type SentimentResult = {
 
 export default function Home() {
   const [text, setText] = useState("")
-  const [result, setResult] = useState<SentimentResult>({ sentiment: null, confidence: 0 })
+  const [result, setResult] = useState<SentimentResult>({
+    sentiment: null,
+    confidence: 0,
+  })
   const [isLoading, setIsLoading] = useState(false)
+
+  const RENDER_API_URL =
+    "https://twitter-sentiment-analysis-api.onrender.com/api/predict"
 
   const handleAnalyze = async () => {
     if (!text.trim()) return
 
     setIsLoading(true)
+    setResult({ sentiment: null, confidence: 0 }) // Clear previous result
+
     try {
-      /**
-       * 1. Use the relative path '/api/predict'.
-       * This leverages the 'rewrites' in next.config.ts to avoid CORS errors.
-       */
-      const response = await fetch("/api/predict", {
+      const response = await fetch(RENDER_API_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ text }),
       })
 
       if (!response.ok) {
-        throw new Error(`Server responded with status: ${response.status}`)
+        throw new Error("Server is waking up or unavailable.")
       }
 
       const data = await response.json()
 
-      /**
-       * 2. Data Normalization.
-       * Python often returns "Positive" (Capitalized). 
-       * We convert to lowercase to match our TypeScript type "positive" | "negative".
-       */
       setResult({
         sentiment: data.sentiment.toLowerCase() as "positive" | "negative",
-        // Fallback to 0 if your backend doesn't send confidence yet
         confidence: data.confidence || 0,
       })
     } catch (error) {
-      console.error("Error analyzing sentiment:", error)
-      // Reset result on error to clear old data
-      setResult({ sentiment: null, confidence: 0 })
-      alert("Failed to connect to the analysis server. Please ensure the Python backend is running.")
+      console.error("Analysis Error:", error)
+      alert(
+        "Note: The free server takes ~50s to wake up if it hasn't been used recently. Please try again in a few moments!"
+      )
     } finally {
       setIsLoading(false)
     }
   }
 
-const handleRandomTweet = () => {
+  const handleRandomTweet = () => {
     const sampleTweets = [
       // Very Positive
       "I absolutely love this product! Best purchase ever! 😍",
@@ -66,7 +64,7 @@ const handleRandomTweet = () => {
       "The new update is a total game changer, everything works perfectly now!",
       "Feeling so blessed and grateful for the support from my community today.",
       "Just had the best cup of coffee of my life. What a great start to the day!",
-      
+
       // Neutral / Informational
       "The conference starts tomorrow at 9 AM in the main auditorium.",
       "Just finished reading the latest research paper on Natural Language Processing.",
@@ -87,17 +85,19 @@ const handleRandomTweet = () => {
       "The customer service was extremely rude and unhelpful. Avoid this place.",
       "I've been waiting for my order for three weeks and still nothing. Terrible.",
       "This app is so buggy it's almost impossible to use. Fix it already!",
-      "Extremely frustrated with the constant delays. Zero stars if I could."
+      "Extremely frustrated with the constant delays. Zero stars if I could.",
     ]
 
-    const randomTweet = sampleTweets[Math.floor(Math.random() * sampleTweets.length)]
+    const randomTweet =
+      sampleTweets[Math.floor(Math.random() * sampleTweets.length)]
+
     setText(randomTweet)
   }
 
   return (
     <main className="min-h-screen bg-background flex flex-col">
       <Header />
-      
+
       <div className="flex-1 flex items-center justify-center px-4 py-12 md:py-16">
         <div className="w-full max-w-2xl">
           {/* Input section for typing or generating random tweets */}
@@ -111,12 +111,12 @@ const handleRandomTweet = () => {
           />
 
           {/* Results Panel: Only shows when a sentiment result exists.
-            The backend returns "Positive" which we've converted to lowercase "positive".
+              The backend returns "Positive" which we've converted to lowercase "positive".
           */}
           {result.sentiment && (
-            <ResultsPanel 
-              sentiment={result.sentiment} 
-              confidence={result.confidence} 
+            <ResultsPanel
+              sentiment={result.sentiment}
+              confidence={result.confidence}
             />
           )}
         </div>
