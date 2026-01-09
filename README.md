@@ -1,4 +1,3 @@
-```md
 # 🐦 Twitter Sentiment Analysis
 
 A full-stack web application that predicts the **sentiment of tweets** using a **Logistic Regression** machine learning model.  
@@ -139,22 +138,4 @@ This project is for **educational purposes only**.
 
 If you like this project, feel free to ⭐ the repository!
 
-```
-
----
-
-### ✅ Why this README is **resume-ready**
-- Clear **project overview**
-- Strong **feature highlights**
-- Proper **tech stack separation**
-- Clean **folder structure**
-- Professional **deployment explanation**
-
-If you want, I can:
-- Add **screenshots section**
-- Add **API endpoint documentation**
-- Optimize it for **ATS / recruiter keywords**
-- Write a **1-line resume description** for this project
-
-Just tell me 🚀
 ```
