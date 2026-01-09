@@ -1,89 +1,139 @@
-🐦 Twitter Sentiment Analysis
-A full-stack web application that predicts the sentiment of tweets using a Logistic Regression machine learning model. The project features a modern Next.js frontend and a FastAPI backend, deployed as a monorepo on Vercel.
+# 🐦 Twitter Sentiment Analysis
 
-🚀 Features
-Real-time Prediction: Analyze tweet sentiment (Positive/Negative) instantly.
+A full-stack web application that predicts the **sentiment of tweets** using a **Logistic Regression** machine learning model.  
+The project uses a **modern Next.js frontend** and a **FastAPI backend**, deployed as a **monorepo on Vercel**.
 
-Confidence Scoring: Displays the mathematical probability of the prediction using predict_proba.
+---
 
-Hybrid Architecture: Combines the speed of a React-based frontend with the ML power of Python.
+## 🚀 Features
 
-Responsive UI: Built with Tailwind CSS and Lucide icons for a clean, modern look.
+- **Real-time Prediction**  
+  Instantly analyze tweet sentiment as **Positive** or **Negative**.
 
-Random Tweet Generator: Quickly test the model with pre-loaded sample data.
+- **Confidence Scoring**  
+  Displays prediction probability using `predict_proba` from Scikit-Learn.
 
-🛠️ Tech Stack
-Frontend
-Framework: Next.js 15+ (App Router).
+- **Hybrid Architecture**  
+  Combines a fast React-based frontend with a Python-powered ML backend.
 
-Styling: Tailwind CSS.
+- **Responsive UI**  
+  Built with **Tailwind CSS** and **Lucide Icons** for a clean, modern interface.
 
-Icons: Lucide React.
+- **Random Tweet Generator**  
+  Quickly test the model using pre-loaded sample tweets.
 
-Language: TypeScript.
+---
 
-Backend
-Framework: FastAPI.
+## 🛠️ Tech Stack
 
-ML Libraries: Scikit-Learn, NLTK, Pandas, NumPy.
+### Frontend
+- **Framework:** Next.js 15+ (App Router)
+- **Language:** TypeScript
+- **Styling:** Tailwind CSS
+- **Icons:** Lucide React
 
-Server: Uvicorn.
+### Backend
+- **Framework:** FastAPI
+- **ML Libraries:** Scikit-Learn, NLTK, Pandas, NumPy
+- **Server:** Uvicorn
 
-📂 Project Structure
-Plaintext
+---
 
-├── api/                    # Python FastAPI Backend
+## 📂 Project Structure
+
+```
+
+├── api/                    # FastAPI backend
 │   ├── index.py            # Main API logic & ML routes
 │   ├── trained_model.sav   # Serialized Logistic Regression model
 │   └── vectorizer.sav      # TF-IDF Vectorizer
 ├── app/                    # Next.js App Router (Frontend)
 ├── components/             # Reusable React components
 ├── requirements.txt        # Python dependencies
-├── vercel.json             # Deployment configuration
+├── vercel.json             # Vercel deployment configuration
 └── package.json            # Node.js dependencies
-⚙️ Local Setup
-1. Clone the repository
-Bash
 
+````
+
+---
+
+## ⚙️ Local Setup
+
+### 1️⃣ Clone the Repository
+
+```bash
 git clone https://github.com/yourusername/twitter-sentiment-analysis.git
 cd twitter-sentiment-analysis
-2. Setup the Python Backend
-It is highly recommended to use a virtual environment.
+````
 
-Bash
+---
 
-# Create and activate venv
+### 2️⃣ Setup the Python Backend
+
+It is recommended to use a **virtual environment**.
+
+```bash
+# Create and activate virtual environment
 python -m venv .venv
-source .venv/Scripts/activate  # Windows: .venv\Scripts\activate
+source .venv/Scripts/activate   # Windows: .venv\Scripts\activate
 
 # Install dependencies
 pip install -r requirements.txt
 
 # Start the FastAPI server
 uvicorn api.index:app --reload --port 8000
-3. Setup the Next.js Frontend
-Open a new terminal window:
+```
 
-Bash
+---
 
+### 3️⃣ Setup the Next.js Frontend
+
+Open a **new terminal window**:
+
+```bash
 # Install dependencies
 npm install
 
 # Run the development server
 npm run dev
-Visit http://localhost:3000 to view the app.
+```
 
-🧠 Model Information
-The sentiment analysis model was trained on the Sentiment140 dataset containing 1.6 million tweets.
+Visit: **[http://localhost:3000](http://localhost:3000)**
 
-Algorithm: Logistic Regression.
+---
 
-Preprocessing: Stopword removal and Porter Stemming (via NLTK).
+## 🧠 Model Information
 
-Feature Extraction: TF-IDF Vectorization.
+* **Dataset:** Sentiment140 (1.6 million tweets)
+* **Algorithm:** Logistic Regression
+* **Text Preprocessing:**
 
-☁️ Deployment
-This project is configured for Vercel. The vercel.json file handles routing traffic from /api to the Python serverless functions.
+  * Stopword Removal
+  * Porter Stemming (NLTK)
+* **Feature Extraction:** TF-IDF Vectorization
 
-📄 License
-This project is for educational purposes.
+---
+
+## ☁️ Deployment
+
+This project is configured for **Vercel**.
+
+* The `vercel.json` file routes `/api` requests to FastAPI serverless functions.
+* Frontend and backend are deployed together as a **monorepo**.
+
+---
+
+## 📄 License
+
+This project is for **educational purposes only**.
+
+---
+
+## ⭐ Acknowledgements
+
+* Kaggle – Sentiment140 Dataset
+* Scikit-Learn & FastAPI Documentation
+
+---
+
+If you like this project, feel free to ⭐ the repository!
